@@ -3,21 +3,21 @@
 require_relative "lib/solidgate/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "solidgate"
+  spec.name = "solidgate-ruby-sdk"
   spec.version = Solidgate::VERSION
   spec.authors = ["Hector Carrillo"]
-  spec.email = ["hector@cgtrader.com"]
+  spec.email = ["carrfane@gmail.com"]
   
   spec.summary = "Ruby SDK for Solidgate payment processing"
   spec.description = "A Ruby SDK for integrating with the Solidgate payment gateway API"
-  spec.homepage = "https://github.com/cgtrader/solidgate-ruby-sdk"
+  spec.homepage = "https://github.com/carrfane/solidgate-ruby-sdk"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
   
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/cgtrader/solidgate-ruby-sdk"
-  spec.metadata["changelog_uri"] = "https://github.com/cgtrader/solidgate-ruby-sdk/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/carrfane/solidgate-ruby-sdk"
+  spec.metadata["changelog_uri"] = "https://github.com/carrfane/solidgate-ruby-sdk/blob/master/CHANGELOG.md"
   
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir.chdir(__dir__) do

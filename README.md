@@ -1,6 +1,6 @@
 # Solidgate Ruby SDK
 
-A Ruby SDK for integrating with the Solidgate payment gateway API.
+A Ruby (unofficial) SDK for integrating with the Solidgate payment gateway API.
 
 ## Installation
 
@@ -20,13 +20,15 @@ Or install it yourself as:
 
 ## Configuration
 
-Configure the SDK with your Solidgate credentials:
+Configure the SDK with your Solidgate credentials in an initializer file:
 
 ```ruby
 Solidgate.configure do |config|
-  config.public_key = "your_public_key"
-  config.private_key = "your_private_key"
-  config.sandbox = true # Set to false for production
+  config.public_key = 'your_public_key'
+  config.private_key = 'your_private_key'
+  config.webhook_public_key = 'your_webhook_public_key'
+  config.webhook_private_key = 'your_webhook_private_key'
+  config.sandbox = true
 end
 ```
 
@@ -35,97 +37,37 @@ end
 ### Creating a Payment
 
 ```ruby
-# Create a payment
-payment = Solidgate::Payment.new
+client = Solidgate::Client.new
 
-response = payment.create(
-  order_id: "order_123",
-  amount: 1000, # Amount in cents ($10.00)
-  currency: "USD",
-  card_data: {
-    number: "4111111111111111",
-    exp_month: "12",
-    exp_year: "2025",
-    cvv: "123"
-  },
-  customer: {
-    email: "customer@example.com",
-    first_name: "John",
-    last_name: "Doe"
-  },
-  description: "Test payment"
-)
+payment_intent = {
+  order_id:            'order_id_123', # Unique order identifier provided by the merchant
+  product_id:          'product_id_456', # Product identifier generated in Solidgate Dashboard
+  customer_account_id: 'customer_789', # Unique customer identifier provided by the merchant
+  order_description:   'Premium package',
+  type:                'auth',
+  settle_interval:     0, # delay in hours for automatic settlement, 0 means immediate settlement
+  retry_attempt:       3,
+  language:            I18n.locale # language to render the payment form
+}.to_json
+
+encrypted_payment_intent = client.generate_intent(payment_intent)
+
+# use the payment_data in your FE to render the payment form
+
+payment_data = {
+  merchant:      Solidgate.configuration.public_key,
+  signature:     SolidgateClient.generate_signature(encrypted_payment_intent),
+  paymentIntent: encrypted_payment_intent
+}
 ```
 
-### Retrieving Payment Information
+### Handling Webhooks
 
 ```ruby
-payment = Solidgate::Payment.new
-response = payment.get("payment_id_123")
+  payload = request.body.read
+  Solidgate::Webhook.new.validate_signature(payload, request.headers['Signature']) # returns true/false to verify the webhook
 ```
 
-### Capturing a Payment
-
-```ruby
-payment = Solidgate::Payment.new
-
-# Capture full amount
-payment.capture("payment_id_123")
-
-# Capture partial amount
-payment.capture("payment_id_123", amount: 500)
-```
-
-### Voiding a Payment
-
-```ruby
-payment = Solidgate::Payment.new
-payment.void("payment_id_123")
-```
-
-### Refunding a Payment
-
-```ruby
-payment = Solidgate::Payment.new
-
-# Full refund
-payment.refund("payment_id_123")
-
-# Partial refund with reason
-payment.refund("payment_id_123", amount: 500, reason: "Customer request")
-```
-
-### Using a Custom Client
-
-You can also create a client instance with custom configuration:
-
-```ruby
-client = Solidgate.client(
-  public_key: "custom_public_key",
-  private_key: "custom_private_key",
-  sandbox: false
-)
-
-payment = Solidgate::Payment.new(client)
-```
-
-## Error Handling
-
-The SDK provides specific error classes for different types of errors:
-
-```ruby
-begin
-  payment.create(invalid_params)
-rescue Solidgate::ValidationError => e
-  puts "Validation errors: #{e.errors}"
-rescue Solidgate::AuthenticationError => e
-  puts "Authentication failed: #{e.message}"
-rescue Solidgate::APIError => e
-  puts "API error: #{e.message} (Code: #{e.code})"
-rescue Solidgate::ConnectionError => e
-  puts "Connection error: #{e.message}"
-end
-```
 
 ## Available Error Classes
 
