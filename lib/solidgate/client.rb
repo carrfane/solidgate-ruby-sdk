@@ -91,6 +91,10 @@ module Solidgate
       post("/api/v1/products", params)
     end
 
+    def create_price(product_id, params)
+      post("/api/v1/products/#{product_id}/prices", params)
+    end
+
     def products
       get("/api/v1/products")
     end
