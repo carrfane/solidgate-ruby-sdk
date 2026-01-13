@@ -84,7 +84,17 @@ module Solidgate
     # @param subscription_id [String] subscription ID
     # @return [Hash] subscription details
     def subscription_status(subscription_id)
-      post("api/v1/subscription/status", { subscription_id: subscription_id })
+      post("/api/v1/subscription/status", { subscription_id: subscription_id })
+    end
+
+    # Update subscription product
+    #
+    # @param params [Hash] subscription update parameters
+    # @return [Hash] update response
+    # params = { subscription_id: "sub_12345", new_product_id: "prod_67890" }
+    # new product_id is the Solidgate ID of the product to switch to
+    def switch_subscription_product(params)
+      post("/api/v1/subscription/switch-subscription-product", params)
     end
 
     def create_product(params)
