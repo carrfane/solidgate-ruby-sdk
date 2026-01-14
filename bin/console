@@ -2,11 +2,12 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "solidgate"
-
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
-
-# (If you use this, don't forget to add pry to your Gemfile!)
+require "solidgate-ruby-sdk"
 require "pry"
+
+Solidgate.configure do |config|
+  config.public_key = ENV['SOLIDGATE_PUBLIC_KEY'] || "your_public_key"
+  config.private_key = ENV['SOLIDGATE_PRIVATE_KEY'] || "your_private_key"
+  config.sandbox = true
+end
 Pry.start
