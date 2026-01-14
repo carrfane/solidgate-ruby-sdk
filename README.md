@@ -37,7 +37,7 @@ end
 ### Creating a Payment
 
 ```ruby
-client = Solidgate::Client.new
+SolidgateClient = Solidgate::Client.new
 
 payment_intent = {
   order_id:            'order_id_123', # Unique order identifier provided by the merchant
@@ -89,7 +89,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/cgtrader/solidgate-ruby-sdk.
+Bug reports and pull requests are welcome on GitHub at https://github.com/carrfane/solidgate-ruby-sdk.
 
 ## License
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../lib/solidgate"
+require_relative "../lib/solidgate-ruby-sdk"
 require "webmock/rspec"
 require "vcr"
 

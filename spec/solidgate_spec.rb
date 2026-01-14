@@ -24,14 +24,24 @@ RSpec.describe Solidgate do
   end
 
   describe ".client" do
+    before do
+      described_class.configure do |config|
+        config.public_key = "test_public_key"
+        config.private_key = "test_private_key"
+        config.sandbox = true
+      end
+    end
+
     it "returns a new client instance" do
       client = described_class.client
       expect(client).to be_a(Solidgate::Client)
     end
 
     it "accepts configuration options" do
-      client = described_class.client(public_key: "custom_key")
+      client = described_class.client(public_key: "custom_key", private_key: "custom_private", sandbox: false)
       expect(client.config.public_key).to eq("custom_key")
+      expect(client.config.private_key).to eq("custom_private")
+      expect(client.config.sandbox).to be false
     end
   end
 end

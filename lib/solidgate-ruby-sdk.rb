@@ -33,8 +33,8 @@ module Solidgate
     #
     # @param options [Hash] optional configuration overrides
     # @return [Client] new client instance
-    def client
-      Client.new
+    def client(options = Solidgate.configuration)
+      Client.new(options)
     end
   end
 end
