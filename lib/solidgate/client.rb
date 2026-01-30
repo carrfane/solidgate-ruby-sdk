@@ -109,6 +109,10 @@ module Solidgate
       delete("/api/v1/subscriptions/#{subscription_id}/pause-schedule")
     end
 
+    def cancel_subscription(params)
+      post("/api/v1/subscription/cancel", params)
+    end
+
     def create_product(params)
       post("/api/v1/products", params)
     end
