@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    solidgate-ruby-sdk (0.1.5)
+    solidgate-ruby-sdk (0.1.6)
       faraday
       faraday-multipart
 

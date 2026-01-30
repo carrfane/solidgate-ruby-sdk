@@ -98,7 +98,7 @@ module Solidgate
     end
 
     def pause_subscription(subscription_id, params)
-      patch("/api/v1/subscriptions/{subscription_id}/pause-schedule", params)
+      patch("/api/v1/subscriptions/#{subscription_id}/pause-schedule", params)
     end
 
     def create_product(params)
