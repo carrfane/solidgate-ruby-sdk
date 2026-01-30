@@ -97,6 +97,10 @@ module Solidgate
       post("/api/v1/subscription/switch-subscription-product", params)
     end
 
+    def pause_subscription(subscription_id, params)
+      patch("/api/v1/subscriptions/{subscription_id}/pause-schedule", params)
+    end
+
     def create_product(params)
       post("/api/v1/products", params)
     end
@@ -165,6 +169,10 @@ module Solidgate
 
     def post(path, body = {})
       request(:post, path, body)
+    end
+
+    def patch(path, body = {})
+      request(:patch, path, body)
     end
 
     def request(method, path, body = nil)
