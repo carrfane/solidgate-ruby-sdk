@@ -32,7 +32,7 @@ RSpec.describe Solidgate::Payment, :configured do
 
     context "with missing order_id" do
       it "raises ValidationError" do
-        params = valid_params.except(:order_id)
+        params = valid_params.reject { |k,v| k == :order_id }
         expect { payment.create(params) }.to raise_error(Solidgate::ValidationError) do |error|
           expect(error.errors[:order_id]).to eq("is required")
         end
@@ -41,7 +41,7 @@ RSpec.describe Solidgate::Payment, :configured do
 
     context "with missing amount" do
       it "raises ValidationError" do
-        params = valid_params.except(:amount)
+        params = valid_params.reject { |k,v| k == :amount }
         expect { payment.create(params) }.to raise_error(Solidgate::ValidationError) do |error|
           expect(error.errors[:amount]).to eq("is required")
         end
