@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/solidgate-ruby-sdk.svg)](https://badge.fury.io/rb/solidgate-ruby-sdk)
+
 # Solidgate Ruby SDK
 
 A Ruby (unofficial) SDK for integrating with the Solidgate payment gateway API.
