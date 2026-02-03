@@ -137,6 +137,11 @@ client.cancel_subscription(
   cancel_at_period_end: true,
   reason: 'Customer requested cancellation'
 )
+
+# Restore a cancelled subscription
+client.restore_subscription(
+  subscription_id: 'sub_123'
+)
 ```
 
 ### Subscription Pause Scheduling

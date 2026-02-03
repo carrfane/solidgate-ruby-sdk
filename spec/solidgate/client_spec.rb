@@ -329,6 +329,40 @@ RSpec.describe Solidgate::Client do
     end
   end
 
+  describe "#restore_subscription" do
+    let(:restore_params) do
+      {
+        subscription_id: "sub_123"
+      }
+    end
+
+    it "sends POST request to /api/v1/subscription/restore" do
+      client.restore_subscription(restore_params)
+
+      expect(WebMock).to have_requested(:post, "https://subscriptions.solidgate.com/api/v1/subscription/restore")
+        .with(body: restore_params.to_json)
+    end
+
+    it "includes Merchant header with public key" do
+      client.restore_subscription(restore_params)
+
+      expect(WebMock).to have_requested(:post, "https://subscriptions.solidgate.com/api/v1/subscription/restore")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.restore_subscription(restore_params)
+
+      expect(WebMock).to have_requested(:post, "https://subscriptions.solidgate.com/api/v1/subscription/restore")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns restored subscription response" do
+      result = client.restore_subscription(restore_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
   # ==================== Product Methods ====================
 
   describe "#create_product" do

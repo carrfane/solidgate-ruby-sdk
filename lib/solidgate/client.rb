@@ -307,6 +307,24 @@ module Solidgate
       Base64.strict_encode64(instance.hexdigest)
     end
 
+    # Restores a previously cancelled subscription.
+    # Use this to reactivate a subscription that was cancelled but is still within
+    # the restoration period.
+    #
+    # @param params [Hash] restoration parameters:
+    #   - :subscription_id [String] the subscription identifier to restore
+    # @return [Hash] restored subscription details including:
+    #   - :id [String] subscription identifier
+    #   - :status [String] new subscription status (typically 'active')
+    # @raise [InvalidRequestError] if subscription cannot be restored (expired, already active, etc.)
+    #
+    # @example Restore a cancelled subscription
+    #   client.restore_subscription(subscription_id: 'sub_12345')
+    #
+    def restore_subscription(params)
+      post("/api/v1/subscription/restore", params)
+    end
+
     private
 
     # Builds a Configuration object from the provided options.
