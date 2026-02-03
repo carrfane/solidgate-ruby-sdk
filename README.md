@@ -103,11 +103,8 @@ client.capture_payment('payment_id_123', amount: 500)
 # Void an authorized payment (before settlement)
 client.void_payment('payment_id_123')
 
-# Refund a captured payment
-client.refund_payment('payment_id_123')
-
-# Partial refund
-client.refund_payment('payment_id_123', amount: 500, reason: 'Customer request')
+# Refund by order ID (pay.solidgate.com)
+client.refund(order_id: 'order_123', amount: 1000)
 ```
 
 ### Subscription Management
