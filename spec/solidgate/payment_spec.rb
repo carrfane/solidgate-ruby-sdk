@@ -109,12 +109,12 @@ RSpec.describe Solidgate::Payment, :configured do
 
   describe "#refund" do
     it "refunds a payment" do
-      expect(client).to receive(:refund_payment).with("payment_123", {})
+      expect(client).to receive(:refund).with(order_id: "payment_123")
       payment.refund("payment_123")
     end
 
     it "refunds with specific amount and reason" do
-      expect(client).to receive(:refund_payment).with("payment_123", { amount: 500, reason: "Customer request" })
+      expect(client).to receive(:refund).with(order_id: "payment_123", amount: 500, reason: "Customer request")
       payment.refund("payment_123", amount: 500, reason: "Customer request")
     end
   end

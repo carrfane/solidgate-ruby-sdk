@@ -363,6 +363,99 @@ RSpec.describe Solidgate::Client do
     end
   end
 
+  describe "#refund" do
+    let(:refund_params) do
+      {
+        order_id: "order_123",
+        amount: 1000
+      }
+    end
+
+    before do
+      stub_request(:post, /pay\.solidgate\.com/).to_return(
+        status: 200,
+        body: success_response.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+    end
+
+    it "sends POST request to https://pay.solidgate.com/api/v1/refund" do
+      client.refund(refund_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/refund")
+        .with(body: refund_params.to_json)
+    end
+
+    it "uses the pay subdomain instead of subscriptions subdomain" do
+      client.refund(refund_params)
+
+      expect(WebMock).not_to have_requested(:post, /subscriptions\.solidgate\.com/)
+      expect(WebMock).to have_requested(:post, /pay\.solidgate\.com/)
+    end
+
+    it "includes Merchant header with public key" do
+      client.refund(refund_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/refund")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.refund(refund_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/refund")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns refund response" do
+      result = client.refund(refund_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
+  # ==================== Base URL Override ====================
+
+  describe "base_url parameter" do
+    let(:custom_base_url) { "https://custom.solidgate.com" }
+    let(:params) { { order_id: "order_123" } }
+
+    before do
+      stub_request(:post, /custom\.solidgate\.com/).to_return(
+        status: 200,
+        body: success_response.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+    end
+
+    it "uses custom base_url when provided via post method" do
+      client.send(:post, "/api/v1/test", body: params, base_url: custom_base_url)
+
+      expect(WebMock).to have_requested(:post, "https://custom.solidgate.com/api/v1/test")
+        .with(body: params.to_json)
+    end
+
+    it "uses default api_url when base_url is nil" do
+      client.send(:post, "/api/v1/test", body: params, base_url: nil)
+
+      expect(WebMock).to have_requested(:post, "https://subscriptions.solidgate.com/api/v1/test")
+        .with(body: params.to_json)
+    end
+
+    it "includes proper headers when using custom base_url" do
+      client.send(:post, "/api/v1/test", body: params, base_url: custom_base_url)
+
+      expect(WebMock).to have_requested(:post, "https://custom.solidgate.com/api/v1/test")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes signature when using custom base_url" do
+      client.send(:post, "/api/v1/test", body: params, base_url: custom_base_url)
+
+      expect(WebMock).to have_requested(:post, "https://custom.solidgate.com/api/v1/test")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+  end
+
   # ==================== Product Methods ====================
 
   describe "#create_product" do

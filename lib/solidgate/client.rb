@@ -60,7 +60,7 @@ module Solidgate
     # @raise [AuthenticationError] if API credentials are invalid
     #
     def create_payment(params)
-      post("/v1/charge", params)
+      post("/v1/charge", body: params)
     end
 
     # Retrieves payment details and current status.
@@ -88,7 +88,7 @@ module Solidgate
     # @raise [InvalidRequestError] if payment cannot be captured (wrong status, already captured, etc.)
     #
     def capture_payment(payment_id, params = {})
-      post("/v1/charge/#{payment_id}/capture", params)
+      post("/v1/charge/#{payment_id}/capture", body: params)
     end
 
     # Voids a payment that has not yet been settled.
@@ -113,7 +113,7 @@ module Solidgate
     # @raise [InvalidRequestError] if payment cannot be refunded
     #
     def refund_payment(payment_id, params = {})
-      post("/v1/charge/#{payment_id}/refund", params)
+      post("/v1/charge/#{payment_id}/refund", body: params)
     end
 
     # Settles a payment for final processing.
@@ -138,7 +138,7 @@ module Solidgate
     # @raise [InvalidRequestError] if subscription parameters are invalid
     #
     def create_subscription(params)
-      post("/v1/subscription", params)
+      post("/v1/subscription", body: params)
     end
 
     # Retrieves the current status and details of a subscription.
@@ -152,7 +152,7 @@ module Solidgate
     # @raise [InvalidRequestError] if subscription_id is not found
     #
     def subscription_status(subscription_id)
-      post("/api/v1/subscription/status", { subscription_id: subscription_id })
+      post("/api/v1/subscription/status", body: { subscription_id: subscription_id })
     end
 
     # Switches a subscription to a different product/plan.
@@ -171,7 +171,7 @@ module Solidgate
     #   )
     #
     def switch_subscription_product(params)
-      post("/api/v1/subscription/switch-subscription-product", params)
+      post("/api/v1/subscription/switch-subscription-product", body: params)
     end
 
     # Updates an existing pause schedule for a subscription.
@@ -184,7 +184,7 @@ module Solidgate
     # @raise [InvalidRequestError] if subscription has no pause schedule or params are invalid
     #
     def update_subscription_pause(subscription_id, params)
-      patch("/api/v1/subscriptions/#{subscription_id}/pause-schedule", params)
+      patch("/api/v1/subscriptions/#{subscription_id}/pause-schedule", body: params)
     end
 
     # Creates a pause schedule for a subscription.
@@ -198,7 +198,7 @@ module Solidgate
     # @raise [InvalidRequestError] if subscription is invalid or already has a pause schedule
     #
     def create_subscription_pause(subscription_id, params)
-      post("/api/v1/subscriptions/#{subscription_id}/pause-schedule", params)
+      post("/api/v1/subscriptions/#{subscription_id}/pause-schedule", body: params)
     end
 
     # Deletes/cancels a pending pause schedule for a subscription.
@@ -221,7 +221,7 @@ module Solidgate
     # @raise [InvalidRequestError] if subscription is invalid or already cancelled
     #
     def cancel_subscription(params)
-      post("/api/v1/subscription/cancel", params)
+      post("/api/v1/subscription/cancel", body: params)
     end
 
     # Creates a new product in the Solidgate catalog.
@@ -234,7 +234,7 @@ module Solidgate
     # @raise [InvalidRequestError] if product parameters are invalid
     #
     def create_product(params)
-      post("/api/v1/products", params)
+      post("/api/v1/products", body: params)
     end
 
     # Creates a new price for an existing product.
@@ -248,7 +248,7 @@ module Solidgate
     # @raise [InvalidRequestError] if product_id is invalid or price params are invalid
     #
     def create_price(product_id, params)
-      post("/api/v1/products/#{product_id}/prices", params)
+      post("/api/v1/products/#{product_id}/prices", body: params)
     end
 
     # Retrieves all products from the Solidgate catalog.
@@ -322,7 +322,22 @@ module Solidgate
     #   client.restore_subscription(subscription_id: 'sub_12345')
     #
     def restore_subscription(params)
-      post("/api/v1/subscription/restore", params)
+      post("/api/v1/subscription/restore", body: params)
+    end
+
+    # Creates a refund for a transaction.
+    #
+    # @param params [Hash] refund parameters:
+    #   - :order_id [String] the order identifier to refund
+    #   - :amount [Integer] refund amount in minor units (for partial refunds)
+    # @return [Hash] refund response including refund status and details
+    # @raise [InvalidRequestError] if refund parameters are invalid
+    #
+    # @example Create a refund
+    #   client.refund(order_id: 'ord_12345', amount: 1000)
+    #
+    def refund(params)
+      post("/api/v1/refund", body: params, base_url: "https://pay.solidgate.com")
     end
 
     private
@@ -347,8 +362,17 @@ module Solidgate
     # @return [Faraday::Connection] configured HTTP connection
     #
     def connection
-      @connection ||= Faraday.new(
-        url: config.api_url,
+      @connection ||= connection_for(config.api_url)
+    end
+
+    # Creates a Faraday HTTP connection for the specified base URL.
+    #
+    # @param base_url [String] the base URL for the connection
+    # @return [Faraday::Connection] configured HTTP connection
+    #
+    def connection_for(base_url)
+      Faraday.new(
+        url: base_url,
         headers: default_headers
       ) do |conn|
         conn.request :multipart
@@ -386,10 +410,11 @@ module Solidgate
     #
     # @param path [String] API endpoint path
     # @param body [Hash] request body parameters
+    # @param base_url [String, nil] optional base URL to override the default API URL
     # @return [Hash] parsed response body
     #
-    def post(path, body = {})
-      request(:post, path, body)
+    def post(path, body: {}, base_url: nil)
+      request(:post, path, body: body, base_url: base_url)
     end
 
     # Performs a PATCH request to the specified path.
@@ -398,8 +423,8 @@ module Solidgate
     # @param body [Hash] request body parameters
     # @return [Hash] parsed response body
     #
-    def patch(path, body = {})
-      request(:patch, path, body)
+    def patch(path, body: {})
+      request(:patch, path, body: body)
     end
 
     # Performs a DELETE request to the specified path.
@@ -416,16 +441,19 @@ module Solidgate
     # @param method [Symbol] HTTP method (:get, :post, :patch, :delete)
     # @param path [String] API endpoint path
     # @param body [Hash, nil] optional request body
+    # @param base_url [String, nil] optional base URL to override the default API URL
     # @return [Hash] parsed response body
     # @raise [TimeoutError] if request times out
     # @raise [ConnectionError] if connection fails
     # @raise [Error] for other unexpected errors
     #
-    def request(method, path, body = nil)
+    def request(method, path, body: nil, base_url: nil)
       body_json = body ? JSON.generate(body) : ''
       signature = generate_signature(body_json)
 
-      response = connection.send(method) do |req|
+      conn = base_url ? connection_for(base_url) : connection
+
+      response = conn.send(method) do |req|
         req.url path
         req.headers["Merchant"] = config.public_key
         req.headers["Signature"] = signature

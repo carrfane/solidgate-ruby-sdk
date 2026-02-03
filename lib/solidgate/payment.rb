@@ -64,14 +64,15 @@ module Solidgate
     # @param amount [Integer] amount to refund in cents (optional, defaults to full amount)
     # @param reason [String] refund reason (optional)
     # @return [Hash] refund response
-    def refund(payment_id, amount: nil, reason: nil)
-      raise ArgumentError, "payment_id is required" if payment_id.nil? || payment_id.empty?
+    def refund(order_id, amount: nil, reason: nil)
+      raise ArgumentError, "order_id is required" if order_id.nil? || order_id.empty?
       
       params = {}
-      params[:amount] = amount if amount
-      params[:reason] = reason if reason
+      params[:amount]   = amount if amount
+      params[:reason]   = reason if reason
+      params[:order_id] = order_id
       
-      client.refund_payment(payment_id, params)
+      client.refund(params)
     end
 
     private
