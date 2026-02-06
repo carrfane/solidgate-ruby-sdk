@@ -340,6 +340,23 @@ module Solidgate
       post("/api/v1/refund", body: params, base_url: "https://pay.solidgate.com")
     end
 
+    # Updates the payment method (token) associated with an existing subscription.
+    #
+    # @param params [Hash] update parameters including:
+    #   - :subscription_id [String] the subscription to update
+    #   - :token [String] new payment token / payment method identifier
+    # @return [Hash] response from the API with updated subscription/payment method details
+    # @raise [InvalidRequestError] if params are invalid
+    #
+    # @example Update a subscription's payment method
+    #   client.update_subscription_payment_method(
+    #     subscription_id: 'sub_123',
+    #     token: 'tok_abc123'
+    #   )
+    def update_subscription_payment_method(params)
+      post("/api/v1/subscription/update-token", body: params)
+    end
+
     private
 
     # Builds a Configuration object from the provided options.

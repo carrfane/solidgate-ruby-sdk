@@ -363,6 +363,36 @@ RSpec.describe Solidgate::Client do
     end
   end
 
+  describe "#update_subscription_payment_method" do
+    let(:update_params) { { subscription_id: "sub_123", token: "tok_abc123" } }
+
+    it "sends POST request to /api/v1/subscription/update-token" do
+      client.update_subscription_payment_method(update_params)
+
+      expect(WebMock).to have_requested(:post, "https://subscriptions.solidgate.com/api/v1/subscription/update-token")
+        .with(body: update_params.to_json)
+    end
+
+    it "includes Merchant header with public key" do
+      client.update_subscription_payment_method(update_params)
+
+      expect(WebMock).to have_requested(:post, "https://subscriptions.solidgate.com/api/v1/subscription/update-token")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.update_subscription_payment_method(update_params)
+
+      expect(WebMock).to have_requested(:post, "https://subscriptions.solidgate.com/api/v1/subscription/update-token")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns update response" do
+      result = client.update_subscription_payment_method(update_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
   describe "#refund" do
     let(:refund_params) do
       {

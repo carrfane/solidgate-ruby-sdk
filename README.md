@@ -139,6 +139,15 @@ client.cancel_subscription(
 client.restore_subscription(
   subscription_id: 'sub_123'
 )
+
+### Update subscription payment method
+
+# Update the payment token associated with an existing subscription
+client.update_subscription_payment_method(
+  subscription_id: 'sub_123',
+  token: 'tok_abc123'
+)
+
 ```
 
 ### Subscription Pause Scheduling
