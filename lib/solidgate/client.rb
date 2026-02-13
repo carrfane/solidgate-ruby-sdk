@@ -289,6 +289,22 @@ module Solidgate
       encrypt_payload(params)
     end
 
+    # Updates an existing price for a product.
+    # Use this to modify the amount, currency, or billing interval of a price.
+    #
+    # @param product_id [String] the product identifier that owns the price
+    # @param price_id [String] the price identifier to update
+    # @param params [Hash] price update parameters:
+    # @return [Hash] updated price details including price_id
+    # @raise [InvalidRequestError] if product_id, price_id, or params are invalid
+    #
+    # @example Update a price amount
+    #   client.update_product_price('prod_123', 'price_456', amount: 2000)
+    #
+    def update_product_price(product_id, price_id, params)
+      patch("/api/v1/products/#{product_id}/prices/#{price_id}", body: params)
+    end
+
     # Generates an HMAC-SHA512 signature for API request authentication.
     # The signature is required for all API requests and webhook validation.
     #
