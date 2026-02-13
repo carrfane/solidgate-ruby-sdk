@@ -194,6 +194,15 @@ all_products = client.products
 
 # Get prices for a specific product
 prices = client.product_prices('product_id_123')
+
+# Update an existing price
+client.update_product_price('product_id_123', 'price_id_456',
+  status: "active",
+  product_price: 1000,
+  trial_price: 500,
+  currency: "USD",
+  country: "USA"
+)
 ```
 
 ### Signature Generation
