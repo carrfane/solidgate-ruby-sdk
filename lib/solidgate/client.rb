@@ -373,6 +373,20 @@ module Solidgate
       post("/api/v1/subscription/update-token", body: params)
     end
 
+    # Retrieves order status from Solidgate pay domain.
+    #
+    # @param params [Hash] status request parameters:
+    #   - :order_id [String] unique order identifier
+    #   - :payment_id [String] optional payment identifier
+    # @return [Hash] order status response
+    # @raise [InvalidRequestError] if params are invalid
+    #
+    # @example Get order status
+    #   client.order_status(order_id: 'order_123')
+    def order_status(params)
+      post('/api/v1/status', body: params, base_url: "https://pay.solidgate.com")
+    end
+
     private
 
     # Builds a Configuration object from the provided options.

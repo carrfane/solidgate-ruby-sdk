@@ -105,6 +105,9 @@ client.void_payment('payment_id_123')
 
 # Refund by order ID (pay.solidgate.com)
 client.refund(order_id: 'order_123', amount: 1000)
+
+# Check order status (pay.solidgate.com)
+client.order_status(order_id: 'order_123')
 ```
 
 ### Subscription Management
