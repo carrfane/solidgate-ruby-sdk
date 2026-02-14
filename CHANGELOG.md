@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-02-13
+### Added
+- `order_status` endpoint to check order/payment status on `pay.solidgate.com` (`Solidgate::Client#order_status`).
+- README: expanded examples and documentation (order status, payment/refund examples).
+
+### Changed
+- Documentation and minor client docstring improvements.
+
+## [0.1.12] - 2026-02-13
+### Added
+- `update_product_price` endpoint (`Solidgate::Client#update_product_price`) to modify product price attributes.
+
+### Changed
+- Bumped packaged version to `0.1.12` and updated `Gemfile.lock`.
+- Tests updated for product/price management.
+
+## [0.1.11] - 2026-02-06
+### Added
+- `update_subscription_payment_method` endpoint to update a subscription's stored payment token.
+- README examples and RSpec coverage for subscription payment-method updates.
+
 ## [0.1.10] - 2026-02-03
 - Added refund method example to README
 
@@ -43,5 +64,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Thread-safe configuration
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.13...HEAD
+[0.1.13]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.13
+[0.1.12]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.12
+[0.1.11]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.11
+[0.1.10]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.10
 [0.1.0]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.0
