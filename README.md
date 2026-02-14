@@ -103,6 +103,12 @@ client.capture_payment('payment_id_123', amount: 500)
 # Void an authorized payment (before settlement)
 client.void_payment('payment_id_123')
 
+# Refund a captured payment by payment ID
+client.refund_payment('payment_id_123')
+
+# Partial refund by payment ID
+client.refund_payment('payment_id_123', amount: 500, reason: 'Customer requested')
+
 # Refund by order ID (pay.solidgate.com)
 client.refund(order_id: 'order_123', amount: 1000)
 
@@ -171,6 +177,17 @@ client.update_subscription_pause('subscription_id_123',
 
 # Delete/cancel a pending pause schedule
 client.delete_subscription_pause('subscription_id_123')
+```
+
+### Payment Settlement
+
+Settle a payment for final processing:
+
+```ruby
+client = Solidgate::Client.new
+
+# Settle a payment (note: current implementation may have issues)
+client.settle_payment
 ```
 
 ### Product & Price Management

@@ -117,14 +117,14 @@ module Solidgate
     end
 
     # Settles a payment for final processing.
-    # Note: This method appears to have a bug and returns config.api_url instead of making an API call.
+    # Note: This method currently has a bug and returns config.api_url instead of making an API call.
     #
     # @param params [Hash] settlement parameters
     # @return [String] currently returns the API URL (likely unintended behavior)
     # @todo Fix this method to properly call the settlement endpoint
     #
     def settle_payment(params = {})
-      conifg.api_url
+      config.api_url
     end
 
     # Creates a new recurring subscription.
