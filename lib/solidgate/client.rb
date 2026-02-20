@@ -391,6 +391,10 @@ module Solidgate
       post('/api/v1/recurring', body: params, base_url: "https://pay.solidgate.com")
     end
 
+    def make_apm_recurring(params)
+      post('/api/v1/recurring', body: params, base_url: "https://gate.solidgate.com")
+    end
+
     private
 
     # Builds a Configuration object from the provided options.

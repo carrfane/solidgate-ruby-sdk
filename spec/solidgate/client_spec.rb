@@ -443,6 +443,44 @@ RSpec.describe Solidgate::Client do
     end
   end
 
+  describe '#make_card_recurring' do
+    let(:recurring_params) do
+      {
+        payment_method: "paypal-vault",
+        token: "baf2ff5c5a125aeabb4b80d7b983f66f3abf5dbb8d939df48b40755674eddceee78084eab5fa9c15a339c94f1ad2b30cf299",
+        order_id: "923bb4e6-4a5f-41ec-81fb-28eb8a152e55",
+        amount: 1020,
+        currency: "EUR",
+        order_description: "Premium package",
+        order_date: "2025-12-21 11:21:30",
+        customer_account_id: "93a1c659-288d-4d62-929d-10e241078faa",
+        customer_email: "example@example.com",
+        customer_date_of_birth: "1988-11-21",
+        ip_address: "203.0.113.0",
+        platform: "WEB",
+        order_metadata: {
+          coupon_code: "NY2025",
+          partner_id: "123989"
+        }
+      }
+    end
+
+    before do
+      stub_request(:post, /gate\.solidgate\.com/).to_return(
+        status: 200,
+        body: success_response.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+    end
+
+    it "sends POST request to https://pay.solidgate.com/api/v1/refund" do
+      client.make_apm_recurring(recurring_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/recurring")
+        .with(body: recurring_params.to_json)
+    end
+  end
+
   # ==================== Base URL Override ====================
 
   describe "base_url parameter" do
