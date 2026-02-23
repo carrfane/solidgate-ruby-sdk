@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.16] - 2026-02-23
+### Added
+- `alt_refund` endpoint to create refunds using an alternative payment method (`Solidgate::Client#alt_refund`).
+
 ## [0.1.13] - 2026-02-13
 ### Added
 - `order_status` endpoint to check order/payment status on `pay.solidgate.com` (`Solidgate::Client#order_status`).

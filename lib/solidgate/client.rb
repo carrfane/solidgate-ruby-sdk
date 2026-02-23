@@ -356,6 +356,21 @@ module Solidgate
       post("/api/v1/refund", body: params, base_url: "https://pay.solidgate.com")
     end
 
+    # Creates a refund for an alternative transaction (paypal, bizum, others).
+    #
+    # @param params [Hash] refund parameters:
+    #   - :order_id [String] the order identifier to refund
+    #   - :amount [Integer] refund amount in minor units (for partial refunds)
+    # @return [Hash] refund response including refund status and details
+    # @raise [InvalidRequestError] if refund parameters are invalid
+    #
+    # @example Create a refund
+    #   client.refund(order_id: 'ord_12345', amount: 1000)
+    #
+    def alt_refund(params)
+      post("/api/v1/refund", body: params, base_url: "https://gate.solidgate.com")
+    end
+
     # Updates the payment method (token) associated with an existing subscription.
     #
     # @param params [Hash] update parameters including:
