@@ -305,6 +305,21 @@ module Solidgate
       patch("/api/v1/products/#{product_id}/prices/#{price_id}", body: params)
     end
 
+    # Updates an existing price for a product.
+    # Use this to modify the amount, currency, or billing interval of a price.
+    #
+    # @param product_id [String] the product identifier that owns the price
+    # @param params [Hash] price update parameters:
+    # @return [Hash] updated price details including price_id
+    # @raise [InvalidRequestError] if product_id, or params are invalid
+    #
+    # @example Update a price amount
+    #   client.update_product('prod_123', { description: 'wepale' })
+    #
+    def update_product(product_id, params)
+      patch("/api/v1/products/#{product_id}", body: params)
+    end
+
     # Generates an HMAC-SHA512 signature for API request authentication.
     # The signature is required for all API requests and webhook validation.
     #
