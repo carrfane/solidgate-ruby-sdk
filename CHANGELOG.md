@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.17] - 2026-03-03
+### Added
+- `update_product` endpoint (`Solidgate::Client#update_product`) to modify product attributes.
+
+### Changed
+- Bumped SDK version to `0.1.17`.
+
 ## [0.1.16] - 2026-02-23
 ### Added
 - `alt_refund` endpoint to create refunds using an alternative payment method (`Solidgate::Client#alt_refund`).
@@ -68,7 +75,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Thread-safe configuration
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.13...HEAD
+[Unreleased]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.17...HEAD
+[0.1.17]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.17
+[0.1.16]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.16
 [0.1.13]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.13
 [0.1.12]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.12
 [0.1.11]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.11

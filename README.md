@@ -202,6 +202,12 @@ product = client.create_product(
   type: 'subscription'
 )
 
+# Update an existing product
+client.update_product('product_id_123',
+  name: 'Premium Plan Plus',
+  description: 'Updated product description'
+)
+
 # Create a price for a product
 price = client.create_price('product_id_123',
   amount: 1999,           # $19.99 in cents
