@@ -5,6 +5,9 @@
 Solidgate Ruby SDK is an unofficial Ruby library for integrating with the Solidgate payment gateway API.
 It provides a clean, object-oriented interface for payment processing, subscription management, and webhook handling.
 
+## Integration Documentation
+- Payment integration guide for humans and LLM agents: `docs/payment-integration-guide.md`
+
 ## Project Structure
 
 ### Core Components
