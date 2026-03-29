@@ -4,6 +4,10 @@
 
 A Ruby (unofficial) SDK for integrating with the Solidgate payment gateway API.
 
+## Additional Documentation
+
+- Integration guide for payments (humans and LLM agents): `docs/payment-integration-guide.md`
+
 ## Installation
 
 Add this line to your application's Gemfile:
