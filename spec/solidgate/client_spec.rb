@@ -443,25 +443,11 @@ RSpec.describe Solidgate::Client do
     end
   end
 
-  describe '#make_card_recurring' do
-    let(:recurring_params) do
+  describe "#alt_refund" do
+    let(:refund_params) do
       {
-        payment_method: "paypal-vault",
-        token: "baf2ff5c5a125aeabb4b80d7b983f66f3abf5dbb8d939df48b40755674eddceee78084eab5fa9c15a339c94f1ad2b30cf299",
-        order_id: "923bb4e6-4a5f-41ec-81fb-28eb8a152e55",
-        amount: 1020,
-        currency: "EUR",
-        order_description: "Premium package",
-        order_date: "2025-12-21 11:21:30",
-        customer_account_id: "93a1c659-288d-4d62-929d-10e241078faa",
-        customer_email: "example@example.com",
-        customer_date_of_birth: "1988-11-21",
-        ip_address: "203.0.113.0",
-        platform: "WEB",
-        order_metadata: {
-          coupon_code: "NY2025",
-          partner_id: "123989"
-        }
+        order_id: "order_123",
+        amount: 1000
       }
     end
 
@@ -473,11 +459,228 @@ RSpec.describe Solidgate::Client do
       )
     end
 
-    it "sends POST request to https://pay.solidgate.com/api/v1/refund" do
+    it "sends POST request to https://gate.solidgate.com/api/v1/refund" do
+      client.alt_refund(refund_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/refund")
+        .with(body: refund_params.to_json)
+    end
+
+    it "uses the gate subdomain instead of subscriptions or pay subdomains" do
+      client.alt_refund(refund_params)
+
+      expect(WebMock).not_to have_requested(:post, /subscriptions\.solidgate\.com/)
+      expect(WebMock).not_to have_requested(:post, /pay\.solidgate\.com/)
+      expect(WebMock).to have_requested(:post, /gate\.solidgate\.com/)
+    end
+
+    it "includes Merchant header with public key" do
+      client.alt_refund(refund_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/refund")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.alt_refund(refund_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/refund")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns refund response" do
+      result = client.alt_refund(refund_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
+  describe "#order_status" do
+    let(:status_params) do
+      {
+        order_id: "order_123"
+      }
+    end
+
+    before do
+      stub_request(:post, /pay\.solidgate\.com/).to_return(
+        status: 200,
+        body: success_response.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+    end
+
+    it "sends POST request to https://pay.solidgate.com/api/v1/status" do
+      client.order_status(status_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/status")
+        .with(body: status_params.to_json)
+    end
+
+    it "uses the pay subdomain instead of subscriptions or gate subdomains" do
+      client.order_status(status_params)
+
+      expect(WebMock).not_to have_requested(:post, /subscriptions\.solidgate\.com/)
+      expect(WebMock).not_to have_requested(:post, /gate\.solidgate\.com/)
+      expect(WebMock).to have_requested(:post, /pay\.solidgate\.com/)
+    end
+
+    it "includes Merchant header with public key" do
+      client.order_status(status_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/status")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.order_status(status_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/status")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns order status response" do
+      result = client.order_status(status_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
+  describe "#apm_order_status" do
+    let(:status_params) do
+      {
+        order_id: "order_123"
+      }
+    end
+
+    before do
+      stub_request(:post, /gate\.solidgate\.com/).to_return(
+        status: 200,
+        body: success_response.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+    end
+
+    it "sends POST request to https://gate.solidgate.com/api/v1/status" do
+      client.apm_order_status(status_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/status")
+        .with(body: status_params.to_json)
+    end
+
+    it "uses the gate subdomain instead of subscriptions or pay subdomains" do
+      client.apm_order_status(status_params)
+
+      expect(WebMock).not_to have_requested(:post, /subscriptions\.solidgate\.com/)
+      expect(WebMock).not_to have_requested(:post, /pay\.solidgate\.com/)
+      expect(WebMock).to have_requested(:post, /gate\.solidgate\.com/)
+    end
+
+    it "includes Merchant header with public key" do
+      client.apm_order_status(status_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/status")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.apm_order_status(status_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/status")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns order status response" do
+      result = client.apm_order_status(status_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
+  describe '#make_card_recurring' do
+    let(:recurring_params) do
+      {
+        order_id: "order_123",
+        amount: 1020,
+        currency: "EUR",
+        token: "token_123"
+      }
+    end
+
+    before do
+      stub_request(:post, /pay\.solidgate\.com/).to_return(
+        status: 200,
+        body: success_response.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+    end
+
+    it "sends POST request to https://pay.solidgate.com/api/v1/recurring" do
+      client.make_card_recurring(recurring_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/recurring")
+        .with(body: recurring_params.to_json)
+    end
+
+    it "includes Merchant header with public key" do
+      client.make_card_recurring(recurring_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/recurring")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.make_card_recurring(recurring_params)
+
+      expect(WebMock).to have_requested(:post, "https://pay.solidgate.com/api/v1/recurring")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns recurring response" do
+      result = client.make_card_recurring(recurring_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
+  describe '#make_apm_recurring' do
+    let(:recurring_params) do
+      {
+        order_id: "order_123",
+        amount: 1020,
+        currency: "EUR",
+        token: "token_123"
+      }
+    end
+
+    before do
+      stub_request(:post, /gate\.solidgate\.com/).to_return(
+        status: 200,
+        body: success_response.to_json,
+        headers: { "Content-Type" => "application/json" }
+      )
+    end
+
+    it "sends POST request to https://gate.solidgate.com/api/v1/recurring" do
       client.make_apm_recurring(recurring_params)
 
       expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/recurring")
         .with(body: recurring_params.to_json)
+    end
+
+    it "includes Merchant header with public key" do
+      client.make_apm_recurring(recurring_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/recurring")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.make_apm_recurring(recurring_params)
+
+      expect(WebMock).to have_requested(:post, "https://gate.solidgate.com/api/v1/recurring")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns recurring response" do
+      result = client.make_apm_recurring(recurring_params)
+      expect(result).to eq(success_response)
     end
   end
 
@@ -548,6 +751,42 @@ RSpec.describe Solidgate::Client do
     end
   end
 
+  describe "#update_product" do
+    let(:product_id) { "prod_123" }
+    let(:product_params) do
+      {
+        name: "Updated Premium Plan",
+        description: "Updated access to premium features"
+      }
+    end
+
+    it "sends PATCH request to /api/v1/products/:id" do
+      client.update_product(product_id, product_params)
+
+      expect(WebMock).to have_requested(:patch, "https://subscriptions.solidgate.com/api/v1/products/#{product_id}")
+        .with(body: product_params.to_json)
+    end
+
+    it "includes Merchant header with public key" do
+      client.update_product(product_id, product_params)
+
+      expect(WebMock).to have_requested(:patch, "https://subscriptions.solidgate.com/api/v1/products/#{product_id}")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.update_product(product_id, product_params)
+
+      expect(WebMock).to have_requested(:patch, "https://subscriptions.solidgate.com/api/v1/products/#{product_id}")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns updated product" do
+      result = client.update_product(product_id, product_params)
+      expect(result).to eq(success_response)
+    end
+  end
+
   describe "#create_price" do
     let(:product_id) { "prod_123" }
     let(:price_params) do
@@ -595,6 +834,49 @@ RSpec.describe Solidgate::Client do
 
     it "returns list of prices" do
       result = client.product_prices(product_id)
+      expect(result).to eq(success_response)
+    end
+  end
+
+  describe "#update_product_price" do
+    let(:product_id) { "product_id_123" }
+    let(:price_id) { "price_id_456" }
+    let(:price_params) do
+      {
+        status: "active",
+        product_price: 1000,
+        trial_price: 500,
+        currency: "USD",
+        country: "USA"
+      }
+    end
+
+    it "sends PATCH request to /api/v1/products/:product_id/prices/:price_id" do
+      client.update_product_price(product_id, price_id, price_params)
+
+      expect(WebMock).to have_requested(:patch,
+                                        "https://subscriptions.solidgate.com/api/v1/products/#{product_id}/prices/#{price_id}")
+        .with(body: price_params.to_json)
+    end
+
+    it "includes Merchant header with public key" do
+      client.update_product_price(product_id, price_id, price_params)
+
+      expect(WebMock).to have_requested(:patch,
+                                        "https://subscriptions.solidgate.com/api/v1/products/#{product_id}/prices/#{price_id}")
+        .with(headers: { "Merchant" => public_key })
+    end
+
+    it "includes Signature header" do
+      client.update_product_price(product_id, price_id, price_params)
+
+      expect(WebMock).to have_requested(:patch,
+                                        "https://subscriptions.solidgate.com/api/v1/products/#{product_id}/prices/#{price_id}")
+        .with { |req| !req.headers["Signature"].nil? && !req.headers["Signature"].empty? }
+    end
+
+    it "returns updated price" do
+      result = client.update_product_price(product_id, price_id, price_params)
       expect(result).to eq(success_response)
     end
   end

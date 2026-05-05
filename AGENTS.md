@@ -35,9 +35,9 @@ It provides a clean, object-oriented interface for payment processing, subscript
 - Handles authentication via HMAC-SHA512 signatures
 - Provides methods for all Solidgate API endpoints:
   - Payment operations: `create_payment`, `get_payment`, `capture_payment`, `void_payment`, `refund_payment`, `settle_payment`
-  - Subscription operations: `create_subscription`, `subscription_status`, `switch_subscription_product`, `update_subscription_pause`, `create_subscription_pause`, `delete_subscription_pause`, `cancel_subscription`, `restore_subscription`
+  - Subscription operations: `create_subscription`, `subscription_status`, `switch_subscription_product`, `update_subscription_pause`, `create_subscription_pause`, `delete_subscription_pause`, `cancel_subscription`, `restore_subscription`, `update_subscription_payment_method`
   - Product operations: `create_product`, `update_product`, `create_price`, `products`, `product_prices`, `update_product_price`
-  - Utility methods: `generate_intent`, `generate_signature`, `refund`, `order_status`
+  - Utility methods: `generate_intent`, `generate_signature`, `refund`, `alt_refund`, `order_status`, `apm_order_status`, `make_card_recurring`, `make_apm_recurring`
 - Private methods for HTTP operations: `get`, `post`, `patch`, `delete`, `request`
 - Encryption: `encrypt_payload` for payment intent generation (AES-256-CBC)
 
@@ -65,7 +65,7 @@ It provides a clean, object-oriented interface for payment processing, subscript
   - `Solidgate::ValidationError` - Parameter validation (includes errors hash)
 
 #### `lib/solidgate/version.rb`
-- Version constant: `Solidgate::VERSION = "0.1.17"`
+- Version constant: `Solidgate::VERSION = "0.2.0"`
 
 ### Test Structure
 

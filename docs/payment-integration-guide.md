@@ -1,6 +1,6 @@
 # Solidgate Ruby SDK Integration Guide (Payments)
 
-> Target version: `solidgate-ruby-sdk` `0.1.17`  
+> Target version: `solidgate-ruby-sdk` `0.2.0`  
 > Audience: engineers and LLM agents integrating Solidgate payments in Ruby apps.
 
 ## 1) What this SDK provides
@@ -107,11 +107,12 @@ refunded = client.refund_payment(payment_id, amount: 300, reason: "partial_refun
 - `void_payment(payment_id)` -> `POST /v1/charge/:payment_id/void`
 - `refund_payment(payment_id, params = {})` -> `POST /v1/charge/:payment_id/refund`
 
-### Refund/status via pay domain
+### Refund and status helper routes
 
 - `refund(params)` -> `POST https://pay.solidgate.com/api/v1/refund`
   - typically `order_id`, optional `amount`
 - `order_status(params)` -> `POST https://pay.solidgate.com/api/v1/status`
+- `apm_order_status(params)` -> `POST https://gate.solidgate.com/api/v1/status`
 
 ### Alternative payment routes
 
@@ -242,7 +243,7 @@ If an LLM agent is integrating this SDK into another project, follow this sequen
 
 ---
 
-## 10) Known quirks in current SDK (v0.1.17)
+## 10) Known quirks in current SDK (v0.2.0)
 
 - `settle_payment` currently does **not** call an API endpoint; it returns `config.api_url`.
 - `README.md` examples may not fully match actual method signatures in code.

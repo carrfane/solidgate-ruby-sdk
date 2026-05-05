@@ -116,8 +116,32 @@ client.refund_payment('payment_id_123', amount: 500, reason: 'Customer requested
 # Refund by order ID (pay.solidgate.com)
 client.refund(order_id: 'order_123', amount: 1000)
 
+# Refund an alternative payment method order (gate.solidgate.com)
+client.alt_refund(order_id: 'apm_order_123', amount: 750)
+
 # Check order status (pay.solidgate.com)
 client.order_status(order_id: 'order_123')
+
+# Check alternative payment method order status (gate.solidgate.com)
+client.apm_order_status(order_id: 'apm_order_123')
+
+# Charge a saved card payment method for a recurring payment
+client.make_card_recurring(
+  order_id: 'renewal_order_123',
+  amount: 1999,
+  currency: 'USD',
+  customer_email: 'customer@example.com',
+  token: 'card_tok_abc123'
+)
+
+# Charge a saved APM payment method for a recurring payment
+client.make_apm_recurring(
+  order_id: 'apm_renewal_123',
+  amount: 1499,
+  currency: 'EUR',
+  customer_email: 'customer@example.com',
+  token: 'apm_tok_xyz789'
+)
 ```
 
 ### Subscription Management
