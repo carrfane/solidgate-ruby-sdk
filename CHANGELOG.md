@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-05
+### Added
+- `apm_order_status` endpoint for checking alternative payment method order status.
+- Spec coverage for previously untested client methods added in this worktree.
+
+### Fixed
+- Recurring payment spec coverage bug affecting the recurring endpoint test suite.
+
+### Changed
+- Documentation updates and version bump for the `0.2.0` release.
+
 ## [0.1.17] - 2026-03-03
 ### Added
 - `update_product` endpoint (`Solidgate::Client#update_product`) to modify product attributes.
@@ -17,6 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.16] - 2026-02-23
 ### Added
 - `alt_refund` endpoint to create refunds using an alternative payment method (`Solidgate::Client#alt_refund`).
+
+## [0.1.15] - 2026-02-20
+### Added
+- `make_apm_recurring` endpoint to create recurring alternative payment method charges (`Solidgate::Client#make_apm_recurring`).
+
+## [0.1.14] - 2026-02-17
+### Added
+- `make_card_recurring` endpoint to create recurring card charges (`Solidgate::Client#make_card_recurring`).
 
 ## [0.1.13] - 2026-02-13
 ### Added
@@ -75,9 +94,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Thread-safe configuration
 - Comprehensive documentation and examples
 
-[Unreleased]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.17...HEAD
+[Unreleased]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.17...v0.2.0
 [0.1.17]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.17
 [0.1.16]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.16
+[0.1.15]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.14...v0.1.15
+[0.1.14]: https://github.com/carrfane/solidgate-ruby-sdk/compare/v0.1.13...v0.1.14
 [0.1.13]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.13
 [0.1.12]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.12
 [0.1.11]: https://github.com/carrfane/solidgate-ruby-sdk/releases/tag/v0.1.11

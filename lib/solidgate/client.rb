@@ -417,6 +417,20 @@ module Solidgate
       post('/api/v1/status', body: params, base_url: "https://pay.solidgate.com")
     end
 
+    # Retrieves order status from the Solidgate gate domain for APM transactions.
+    #
+    # @param params [Hash] status request parameters:
+    #   - :order_id [String] unique order identifier
+    #   - :payment_id [String] optional payment identifier
+    # @return [Hash] order status response
+    # @raise [InvalidRequestError] if params are invalid
+    #
+    # @example Get APM order status
+    #   client.apm_order_status(order_id: 'order_123')
+    def apm_order_status(params)
+      post('/api/v1/status', body: params, base_url: "https://gate.solidgate.com")
+    end
+
     def make_card_recurring(params)
       post('/api/v1/recurring', body: params, base_url: "https://pay.solidgate.com")
     end
